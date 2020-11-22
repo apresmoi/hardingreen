@@ -4,6 +4,7 @@ import { Bodies, World, Body } from "matter-js";
 import { useEvents } from "./Events";
 import { Group } from "three";
 import { useFrame } from "react-three-fiber";
+import { getSound } from "src/sounds";
 
 interface ProjectileProps {
     from: { x: number, y: number }
@@ -42,8 +43,28 @@ export function Projectile(props: ProjectileProps) {
             timer.current = performance.now()
             group.current.position.x += (to.x - from.x) * delta / speed
 
-            if (direction === 1 && group.current.position.x >= to.x) group.current.position.x = from.x
-            else if (direction === -1 && group.current.position.x <= to.x) group.current.position.x = from.x
+            if (direction === 1 && group.current.position.x >= to.x) {
+                group.current.position.x = from.x
+                const sound = (() => {
+                    const rnd = Math.random()
+                    if (rnd > 0.5) return getSound('Shoot')
+                    return getSound('Shoot2')
+                })()
+                if (sound) {
+                    sound.play()
+                }
+            }
+            else if (direction === -1 && group.current.position.x <= to.x) {
+                group.current.position.x = from.x
+                const sound = (() => {
+                    const rnd = Math.random()
+                    if (rnd > 0.5) return getSound('Shoot')
+                    return getSound('Shoot2')
+                })()
+                if (sound) {
+                    sound.play()
+                }
+            }
 
             Body.setPosition(sensor, { x: group.current.position.x, y: group.current.position.z })
 

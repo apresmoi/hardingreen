@@ -9,6 +9,7 @@ import { Dialogs } from '../dialogs'
 import { PlayerTexture, PlayerDuckTexture } from "../textures";
 import { useEvents } from "./Events";
 import { doorPosition, yellowNPCPosition, orangeNPCPosition, blueNPCPosition, berriesPosition } from "src/constants";
+import { getSound } from "src/sounds";
 
 export function Player() {
     const [facing, setFacing] = useState(1)
@@ -54,11 +55,28 @@ export function Player() {
     }, [arrowDown])
 
     useEffect(() => {
+        if (arrowUp && jumpCooldown.current === 0) {
+            const sound = (() => {
+                const rnd = Math.random()
+                if (rnd > 0.5) return getSound('Jump')
+                return getSound('Jump2')
+            })()
+            if (sound) {
+                sound.play()
+            }
+        }
+    }, [arrowUp])
+
+    useEffect(() => {
         if (spaceDown && berriesPosition(position)) {
             raiseEvent('berry-pickup')
         }
         if (spaceDown && doorPosition(position)) {
             if (foundKey) {
+                const sound = getSound('Door')
+                if (sound) {
+                    sound.play()
+                }
                 raiseEvent('terrain1-door-open')
             } else {
                 if (!dialogOpen) {
