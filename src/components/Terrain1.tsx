@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState, useRef } from "react";
 import { Group } from "three";
 import { usePhysics } from "./Physics";
 import { Bodies, World } from "matter-js";
-import { TerrainTexture, Player2Texture, Player3Texture } from "../textures";
+import { TerrainTexture, Player2Texture, Player3Texture, Terrain3Texture } from "../textures";
 import { getSound } from "../sounds";
 import { DEBUG } from "src/constants";
 import { useEvents } from "./Events";
@@ -19,7 +19,7 @@ export function Terrain1() {
 
     useEffect(() => {
         if (!DEBUG) {
-            const sound = getSound('Terrain1')
+            const sound = getSound('Terrain1', true)
             sound?.play().catch(err => {
                 if (err.toString().includes('play() failed')) {
                     setRetry(retry + 1)

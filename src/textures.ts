@@ -36,6 +36,12 @@ export const useTexturesManager = () => {
 
 export const PlayerTexture = new TextureLoader(manager).load("perso.png");
 PlayerTexture.wrapS = RepeatWrapping;
+export const PlayerWalk1Texture = new TextureLoader(manager).load("walk1.png");
+PlayerWalk1Texture.wrapS = RepeatWrapping;
+export const PlayerWalk2Texture = new TextureLoader(manager).load("walk2.png");
+PlayerWalk2Texture.wrapS = RepeatWrapping;
+export const PlayerWalk3Texture = new TextureLoader(manager).load("walk3.png");
+PlayerWalk3Texture.wrapS = RepeatWrapping;
 export const PlayerDuckTexture = new TextureLoader(manager).load("perso_duck.png");
 PlayerDuckTexture.wrapS = RepeatWrapping;
 
@@ -48,6 +54,9 @@ Player4Texture.wrapS = RepeatWrapping;
 
 export const TerrainTexture = new TextureLoader(manager).load("map.png");
 export const Terrain2Texture = new TextureLoader(manager).load("map_sub.png");
+export const Terrain2StairsTexture = new TextureLoader(manager).load("stairs2.png");
+export const Terrain3Texture = new TextureLoader(manager).load("esfinge.png");
+export const Terrain4Texture = new TextureLoader(manager).load("map3.png");
 
 export const ObjectTrapTexture = new TextureLoader(manager).load("pincho.png");
 export const ObjectBlockTexture = new TextureLoader(manager).load("bloque.png");

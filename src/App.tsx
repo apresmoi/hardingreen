@@ -18,7 +18,7 @@ function App() {
   const [size, setSize] = useState({ width: 640, height: 400 })
   const [loaded, setLoaded] = useState(false)
   const [progress, setProgress] = useState(0)
-  const [stage, setStage] = useState<Stage>(DEBUG ? 'terrain1' : 'slide1')
+  const [stage, setStage] = useState<Stage>(DEBUG ? 'terrain3' : 'slide1')
   const [retry, setRetry] = useState(0)
 
   const { onProgress, onLoad } = useTexturesManager()
@@ -69,6 +69,7 @@ function App() {
         </>}
         {loaded && stage === 'stage-1-intro' && <Dialog content={Dialogs.start} timeout={5} onDisappear={() => setStage('terrain1')} />}
         {loaded && stage === 'stage-2-intro' && <Dialog content="Que sotano tan extraño" timeout={2} onDisappear={() => setStage('terrain2')} />}
+        {loaded && stage === 'stage-3-intro' && <Dialog content="Nooooo ! que es esto?" timeout={2} onDisappear={() => setStage('terrain3')} />}
         {loaded && stage === 'end' && <Dialog content="Fin." />}
       </Events>
       {<Progress progress={progress} timeout={1} onDisappear={() => setLoaded(true)} />}

@@ -1,11 +1,13 @@
-export const DEBUG = true;
+export const DEBUG = false;
 
 export type Stage =
     'slide1' | 'slide2'
     | 'stage-1-intro'
     | 'terrain1'
     | 'stage-2-intro'
+    | 'stage-3-intro'
     | 'terrain2'
+    | 'terrain3'
     | 'end'
 
 export const doorPosition = (() => {
@@ -43,6 +45,14 @@ export const blueNPCPosition = (() => {
 export const berriesPosition = (() => {
     const min = { x: 32, y: -15 }
     const max = { x: 56, y: -10 }
+    return (v: { x: number, y: number }) => {
+        return v.x > min.x && v.x < max.x && v.y > min.y && v.y < max.y
+    }
+})()
+
+export const sphinxDoorPosition = (() => {
+    const min = { x: -70, y: -160 }
+    const max = { x: -50, y: -135 }
     return (v: { x: number, y: number }) => {
         return v.x > min.x && v.x < max.x && v.y > min.y && v.y < max.y
     }

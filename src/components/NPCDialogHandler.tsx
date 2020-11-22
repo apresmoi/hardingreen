@@ -6,17 +6,23 @@ import { getSound } from 'src/sounds';
 
 
 export function NPCDialogHandler() {
-    const [text, setText] = useState('')
+    const [state, setState] = useState({ text: '', eval: null })
+    // const [evaluator, setResponseEvaluator] = useState<null | ((resp: string) => boolean)>(null)
     const [color, setColor] = useState('white')
     const { subscribeEvent } = useEvents()
 
+    const handleResponse = (response: string) => {
+        //@ts-ignore
+        if (state.eval) state.eval(response)
+    }
+
     useEffect(() => {
-        if (text) {
+        if (state.text) {
             const sound = (() => {
                 const random = Math.random()
-                if (text.length < 30) return getSound('TalkShort')
-                if (text.length > 100) return getSound('TalkUltraLong')
-                if (text.length > 60) {
+                if (state.text.length < 30) return getSound('TalkShort')
+                if (state.text.length > 100) return getSound('TalkUltraLong')
+                if (state.text.length > 60) {
                     if (random < 0.33) return getSound('TalkLong')
                     if (random < 0.66) return getSound('TalkLong2')
                     return getSound('TalkLong3')
@@ -31,21 +37,20 @@ export function NPCDialogHandler() {
                 sound?.stop()
             }
         }
-    }, [text])
+    }, [state])
 
     useEffect(() => {
-        subscribeEvent('npc-dialog', ({ text, name, npc, color, timeout, onTimeout }) => {
-            // console.log(args)
+        subscribeEvent('npc-dialog', ({ text, name, npc, color, timeout, onTimeout, evaluate }) => {
             if (text) {
-                setText(`${name}: ${text}`)
+                setState({ text: `${name}: ${text}`, eval: evaluate })
                 setColor(color)
             } else {
-                setText('')
+                setState({ text: '', eval: null })
             }
 
             if (timeout) {
                 setTimeout(() => {
-                    setText('')
+                    setState({ text: '', eval: null })
                     if (onTimeout) onTimeout()
                 }, timeout * 1000);
             }
@@ -53,9 +58,11 @@ export function NPCDialogHandler() {
     }, [])
 
 
-    if (!text) return null
+    if (!state.text) return null
     return <DialogNPC
-        content={text}
+        content={state.text}
         color={color}
+        onSubmit={handleResponse}
+        textInput={!!state.eval}
     />
 }

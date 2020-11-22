@@ -1,14 +1,14 @@
 import React, { useEffect, useMemo, useState, useRef } from "react";
-import { Group } from "three";
+import { Group, Material, MeshBasicMaterial } from "three";
 import { usePhysics } from "./Physics";
 import { useFrame } from "react-three-fiber";
 import { Bodies, World, Body } from "matter-js";
 import { useKeyPress } from "../hooks/useKeyPress";
 import { Dialogs } from '../dialogs'
 
-import { PlayerTexture, PlayerDuckTexture } from "../textures";
+import { PlayerTexture, PlayerDuckTexture, PlayerWalk1Texture, PlayerWalk2Texture, PlayerWalk3Texture } from "../textures";
 import { useEvents } from "./Events";
-import { doorPosition, yellowNPCPosition, orangeNPCPosition, blueNPCPosition, berriesPosition } from "src/constants";
+import { doorPosition, yellowNPCPosition, orangeNPCPosition, blueNPCPosition, berriesPosition, sphinxDoorPosition } from "src/constants";
 import { getSound } from "src/sounds";
 
 export function Player() {
@@ -17,11 +17,14 @@ export function Player() {
     const { world } = usePhysics()
     const { subscribeEvent, raiseEvent } = useEvents()
     const group = useRef<Group>()
+    const material = useRef<MeshBasicMaterial>()
     const breathing = React.useRef<number>(1);
     const jumpCooldown = React.useRef<number>(0);
+    const walkStep = React.useRef<number>(0);
     const [dialogIndex, setDialogIndex] = useState<number>(0)
     const [dialogOpen, setDialogOpen] = useState<boolean>(false)
     const [foundKey, setFoundKey] = useState<boolean>(false)
+    const [sphinxTalking, setSphinxTalking] = useState<boolean>(false)
 
     const player = useMemo(() => {
         const body = Bodies.circle(0, -15, 6, { mass: 100, frictionAir: 0.2, friction: 0, restitution: 0, plugin: "player" })
@@ -44,6 +47,12 @@ export function Player() {
         })
         subscribeEvent('found-key', () => {
             setFoundKey(true)
+        })
+        subscribeEvent('sphinx-talk', () => {
+            setSphinxTalking(true)
+            setDialogOpen(true)
+            raiseEvent('npc-dialog', Dialogs.sphinx[0])
+            setDialogIndex(1)
         })
     }, [player, subscribeEvent])
 
@@ -70,6 +79,65 @@ export function Player() {
     useEffect(() => {
         if (spaceDown && berriesPosition(position)) {
             raiseEvent('berry-pickup')
+        }
+        if (spaceDown && sphinxTalking) {
+            if (Dialogs.sphinx.length === dialogIndex) {
+                setDialogIndex(0)
+                setDialogOpen(false)
+                raiseEvent('start-engine')
+                raiseEvent('npc-dialog', '')
+                raiseEvent('end')
+            } else {
+                setDialogOpen(true)
+                const dialog = Dialogs.sphinx[dialogIndex]
+                const evaluate = (response: string) => {
+                    let reply: any = null
+                    if (dialog.response?.every(r => response && response.includes(r))) {
+                        setDialogIndex(dialogIndex + 3)
+                        reply = Dialogs.sphinx[dialogIndex + 2]
+                    } else {
+                        setDialogIndex(dialogIndex + 2)
+                        reply = Dialogs.sphinx[dialogIndex + 1]
+                    }
+                    if (reply.action) {
+                        setTimeout(() => {
+                            //@ts-ignore
+                            raiseEvent(reply.action)
+                            if (reply.action === 'death') {
+                                setDialogOpen(false)
+                                setDialogIndex(0)
+                                raiseEvent('npc-dialog', '')
+                                raiseEvent('restart')
+                                raiseEvent('start-engine')
+                            }
+                        }, 1000);
+                    } else {
+                        raiseEvent('npc-dialog', {
+                            ...reply,
+                        })
+                    }
+                }
+                raiseEvent('npc-dialog', {
+                    ...dialog,
+                    evaluate: dialog.response ? evaluate : null
+                })
+                if (dialog.action) {
+                    setTimeout(() => {
+                        //@ts-ignore
+                        raiseEvent(dialog.action)
+                        if (dialog.action === 'death') {
+                            setDialogOpen(false)
+                            setDialogIndex(0)
+                            raiseEvent('npc-dialog', '')
+                            raiseEvent('restart')
+                            raiseEvent('start-engine')
+                        } else {
+                            raiseEvent(dialog.action)
+                        }
+                    }, 1000);
+                }
+                setDialogIndex(dialogIndex + 1)
+            }
         }
         if (spaceDown && doorPosition(position)) {
             if (foundKey) {
@@ -121,7 +189,7 @@ export function Player() {
         else if (spaceDown && blueNPCPosition(position)) {
             raiseEvent('talk-blue')
         }
-    }, [spaceDown, position, foundKey])
+    }, [spaceDown, position, foundKey, sphinxTalking])
 
     useEffect(() => {
         if (arrowRight) setFacing(1)
@@ -131,6 +199,9 @@ export function Player() {
     useEffect(() => {
         PlayerTexture.repeat.x = facing
         PlayerDuckTexture.repeat.x = facing
+        PlayerWalk1Texture.repeat.x = facing
+        PlayerWalk2Texture.repeat.x = facing
+        PlayerWalk3Texture.repeat.x = facing
     }, [facing])
 
     useEffect(() => {
@@ -147,8 +218,14 @@ export function Player() {
         if (group?.current?.position) {
             group.current.position.x = player.position.x
             group.current.position.z = player.position.y
+        }
 
-            // console.log(player.position)
+        if (sphinxDoorPosition(player.position)) {
+            const sound = getSound('Door')
+            if (sound) {
+                sound.play()
+            }
+            raiseEvent('terrain2-stair')
         }
 
         if (arrowLeft || arrowRight || arrowUp || arrowDown) {
@@ -158,6 +235,24 @@ export function Player() {
                 y: 0,
             }
             Body.applyForce(player, player.position, vector);
+
+            walkStep.current += 0.15
+
+            if (material?.current) {
+                material.current.map = (() => {
+                    if (arrowDown) return PlayerDuckTexture
+                    const step = Math.trunc(walkStep.current % 4)
+                    if (step === 0) return PlayerTexture
+                    if (step === 1) return PlayerWalk1Texture
+                    if (step === 2) return PlayerWalk2Texture
+                    else return PlayerWalk3Texture
+                })()
+            }
+        } else {
+            walkStep.current = 0
+            if (material?.current) {
+                material.current.map = PlayerTexture
+            }
         }
 
         if (arrowUp && jumpCooldown?.current === 0) {
@@ -191,7 +286,7 @@ export function Player() {
         >
             <mesh>
                 <boxBufferGeometry args={[6, 0, 12]} />
-                <meshBasicMaterial map={arrowDown ? PlayerDuckTexture : PlayerTexture} transparent />
+                <meshBasicMaterial ref={material} map={arrowDown ? PlayerDuckTexture : PlayerTexture} transparent />
             </mesh>
         </group>
     );

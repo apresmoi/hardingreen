@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState, useRef } from "react";
 import { Group } from "three";
 import { usePhysics } from "./Physics";
 import { Bodies, World, Body } from "matter-js";
-import { Terrain2Texture, Player4Texture } from "../textures";
+import { Terrain2Texture, Player4Texture, Terrain2StairsTexture } from "../textures";
 import { getSound } from "../sounds";
 import { DEBUG } from "src/constants";
 import { Projectile } from "./Projectile";
@@ -15,7 +15,7 @@ export function Terrain2() {
 
     useEffect(() => {
         if (!DEBUG) {
-            const sound = getSound('Terrain2')
+            const sound = getSound('Terrain2', true)
             sound?.play().catch(err => {
                 if (err.toString().includes('play() failed')) {
                     setRetry(retry + 1)
@@ -48,13 +48,19 @@ export function Terrain2() {
         const body13 = Bodies.rectangle(offsetX + 35, offsetY - 132.5 + 5, boxSize, 3, { isStatic: true })
         const body14 = Bodies.rectangle(offsetX + 42, offsetY - 132.5 + 5 + 6, boxSize, 3, { isStatic: true })
 
-        const body7 = Bodies.rectangle(offsetX + 0, offsetY - 172, 924 / 9, 20, { isStatic: true, angle: 0.04 })
+        // const body7 = Bodies.rectangle(offsetX + 0, offsetY - 172, 924 / 9, 20, { isStatic: true, angle: 0.04 })
+        const body7 = Bodies.rectangle(offsetX + 0, offsetY - 200, 924 / 9, 20, { isStatic: true, angle: 0.04 })
 
-        const wallLeft = Bodies.rectangle(offsetX + -83, offsetY - 71, 1700 / 9, 3, { isStatic: true, angle: -1.25 })
-        const wallRight = Bodies.rectangle(offsetX + 72, offsetY - 71, 1700 / 9, 3, { isStatic: true, angle: 1.1 })
+        const body15 = Bodies.rectangle(offsetX - 40, offsetY - 172, 400 / 9, 20, { isStatic: true, angle: 0.04 })
+        const body16 = Bodies.rectangle(offsetX - 30, offsetY - 178, 400 / 9, 20, { isStatic: true, angle: 0.04 })
+        const body17 = Bodies.rectangle(offsetX - 25, offsetY - 186, 400 / 9, 20, { isStatic: true, angle: 0.04 })
+
+        const wallLeft = Bodies.rectangle(offsetX + -83, offsetY - 71, 2500 / 9, 3, { isStatic: true, angle: -1.25 })
+        const wallRight = Bodies.rectangle(offsetX + 72, offsetY - 71, 2500 / 9, 3, { isStatic: true, angle: 1.1 })
 
         const body = Body.create({
-            parts: [body1, body2, body3, body4, body5, body6, body7, body8, body9, body10, body11, body12, body13, body14, wallLeft, wallRight,],
+            parts: [body1, body2, body3, body4, body5, body6, body7, body8, body9, body10, body11, body12, body13, body14, body15, body16, body17, wallLeft, wallRight,],
+            // parts: [body1, body2, body3, body4, body5, body6, body7, body8, body9, body10, body11, body12, body13, body14, wallLeft, wallRight,],
             isStatic: true
         })
 
@@ -83,22 +89,32 @@ export function Terrain2() {
                 </mesh>
 
             </group>
-            <Projectile
-                from={{ x: offsetX - 73, y: -65 + offsetY }}
-                to={{ x: offsetX + 53, y: -65 + offsetY }}
-                speed={4000}
-            />
-            <Projectile
-                from={{ x: offsetX + 53, y: -90.6 + offsetY }}
-                to={{ x: offsetX - 55, y: -90.6 + offsetY }}
-                speed={2000}
-            />
-            <Projectile
-                from={{ x: offsetX - 50, y: -129 + offsetY }}
-                to={{ x: offsetX + 27, y: -129 + offsetY }}
-                speed={2000}
-            />
-            <NPC idColor="blue" position={{ x: offsetX, y: 1, z: offsetY - 156 }} texture={Player4Texture} />
+            <group
+                ref={group}
+                position={[offsetX - 10, 8, -165 + offsetY]}
+            >
+                <mesh>
+                    <boxBufferGeometry args={[900 / 9, 0, 600 / 9]} />
+                    <meshBasicMaterial map={Terrain2StairsTexture} transparent />
+                </mesh>
+            </group>
+            {!DEBUG && <>
+                <Projectile
+                    from={{ x: offsetX - 73, y: -65 + offsetY }}
+                    to={{ x: offsetX + 53, y: -65 + offsetY }}
+                    speed={4000}
+                />
+                <Projectile
+                    from={{ x: offsetX + 53, y: -90.6 + offsetY }}
+                    to={{ x: offsetX - 55, y: -90.6 + offsetY }}
+                    speed={2000}
+                />
+                <Projectile
+                    from={{ x: offsetX - 50, y: -129 + offsetY }}
+                    to={{ x: offsetX + 27, y: -129 + offsetY }}
+                    speed={2000}
+                />
+            </>}
         </>
     );
 }

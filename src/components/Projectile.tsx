@@ -78,7 +78,6 @@ export function Projectile(props: ProjectileProps) {
             subscribeCollision((bodyA, bodyB) => {
                 if (bodyA === sensor && bodyB.plugin === 'player') {
                     raiseEvent('death')
-                    console.log('touch')
                 }
             })
 

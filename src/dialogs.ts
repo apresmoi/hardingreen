@@ -27,7 +27,7 @@ export const Dialogs = {
         { text: 'Me contó que entre sus ruinas, todavía existen tesoros y secretos sin descubrir.', npc: true, color: '#b10b13', name: 'Juki' },
         { text: 'Wow! Que emocionante! Espero algún día poder verlos!', npc: false, color: '#458670', name: 'Gibi' }
     ],
-    guardian: [
+    sphinx: [
         { text: 'Alto! Detente ahi!', npc: true, color: '#b10b13', name: 'Guardiana' },
         { text: 'Aaaah! Quien eres ?', npc: false, color: '#458670', name: 'Gibi' },
         { text: 'Soy Eagipur, la guardiana de la maquina.', npc: true, color: '#b10b13', name: 'Guardiana' },
@@ -43,24 +43,57 @@ export const Dialogs = {
         {
             text: 'Acertijo 1\n Qué ser, provisto de una sola voz, camina en cuatro patas por el dia, en dos patas por la tarde y en tres patas por la noche ?',
             npc: true, color: '#b10b13',
-            right: 'Magnifico! Tu si eres del circulo, sigamos con la proxima pregunta...',
-            wrong: 'Intruso del hombre! Te sentencio a la muerte!',
+            response: ['hombre'],
+            name: 'Guardiana'
+        },
+        {
+            text: 'Intruso del hombre! Te sentencio a la muerte!',
+            action: 'death',
+            npc: true, color: '#b10b13',
+            name: 'Guardiana'
+        },
+        {
+            npc: true, color: '#b10b13',
+            text: 'Magnifico! Tu si eres del circulo, sigamos con la proxima pregunta...',
             name: 'Guardiana'
         },
         {
             text: 'Acertijo 2\n Existen dos hermanas, una engendra a la otra y a su vez engendra a la primera.',
             npc: true, color: '#b10b13',
-            right: 'Maravilloso! Eres un erudito, pasemos a la ultima pregunta...',
-            wrong: 'Aaah Farsante! Tus dias se han terminado!',
+            response: ['dia', 'noche'],
+            name: 'Guardiana'
+        },
+        {
+            text: 'Aaah Farsante! Tus dias se han terminado!',
+            action: 'death',
+            npc: true, color: '#b10b13',
+            name: 'Guardiana'
+        },
+        {
+            npc: true, color: '#b10b13',
+            text: 'Maravilloso! Eres un erudito, pasemos a la ultima pregunta...',
             name: 'Guardiana'
         },
         {
             text: 'Acertijo 3\nQue es lo que siempre se mueve, pero nunca cambia de lugar ?',
             npc: true, color: '#b10b13',
-            rght: 'Excelso! Tu si mereces entrar! Adelante pequeño ser.',
-            wrong: 'Abzurdo! Tu tiempo es caput!',
+            response: ['tiempo'],
             name: 'Guardiana'
         },
-        { text: 'Gracias guardiana!', npc: false, color: '#458670', name: 'Gibi', },
+        {
+            text: 'Abzurdo! Tu tiempo es caput!',
+            action: 'death',
+            npc: true, color: '#b10b13',
+            name: 'Guardiana'
+        },
+        {
+            npc: true, color: '#b10b13',
+            text: 'Excelso! Tu si mereces entrar! Adelante pequeño ser.',
+            name: 'Guardiana'
+        },
+        {
+            text: 'Gracias guardiana!', npc: false, color: '#458670', name: 'Gibi',
+            action: 'end-game'
+        },
     ]
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import './style.css'
 
 interface DialogProps {
@@ -6,12 +6,15 @@ interface DialogProps {
     color?: string
     timeout?: number
     noFade?: boolean
+    textInput?: boolean
+    onSubmit?: (response: string) => void
     onDisappear?: () => void
 }
 
 export function DialogNPC(props: DialogProps) {
-    const { onDisappear, timeout, noFade } = props
+    const { onDisappear, timeout, noFade, onSubmit, textInput } = props
 
+    const [response, setResponse] = useState('')
     const [disappearing, set] = useState(false)
 
     useEffect(() => {
@@ -25,10 +28,27 @@ export function DialogNPC(props: DialogProps) {
         }
     }, [timeout, onDisappear, noFade]);
 
+    const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+        // e.preventDefault()
+        e.stopPropagation()
+
+        if (e.key === 'Enter') {
+            if (onSubmit) onSubmit(response)
+        }
+    }, [onSubmit, response, textInput])
+
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+        setResponse(e.currentTarget.value)
+    }, [textInput])
+
     return <div className={["dialog-npc", !disappearing ? "show" : ""].join(' ')}>
         <div style={{ color: props.color }}>
             {props.content}
         </div>
+        {textInput && <input
+            onKeyDown={handleKeyDown}
+            onChange={handleChange}
+        />}
         <div>
             Presione espacio para continuar.
         </div>

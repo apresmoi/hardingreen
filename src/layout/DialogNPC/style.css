@@ -17,6 +17,13 @@
     flex-flow: column;
 }
 
+.dialog-npc input {
+    max-width: 300px;
+    padding: 10px;
+    font-size: 15px;
+    margin: auto;
+}
+
 .dialog-npc.show {
     opacity: 0.8;
 }
@@ -29,7 +36,7 @@
     max-width: 100%;
 }
 
-.dialog-npc div:nth-child(2) {
+.dialog-npc div:last-child {
     font-size: 16px;
     margin-top: auto;
     margin-left: auto;
