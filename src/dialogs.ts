@@ -93,6 +93,63 @@ export const Dialogs = {
         },
         {
             text: 'Gracias guardiana!', npc: false, color: '#458670', name: 'Gibi',
+            action: 'terrain-3-access'
+        },
+    ],
+    machine: [
+        { text: 'BIP...BIP...ERRORGf43EXXE...BIP...FGG21', name: 'Maquina', npc: true },
+
+        { text: 'Hola me llamo Gibi, vos sos la maquina ? Qué es todo esto ?', name: 'Gibi', npc: false },
+
+        { text: 'YO CONTROLO TODO, CONTROLAR ES MI FUNCION.BIP.BIP.FAIL.ENERGY\n ERES PARTE DE ESTO, TODOS SOMOS PARTE.BIP.ESTA INSTALACION PRODUCE JUGO DE FRUTA.BIP.CADA GENERACION MAS JUGO PARA EL MASTRO.BIP.ERROR F44.ERROR.', name: 'Maquina', npc: true },
+
+        { text: 'Más jugo de bayas Ubu ? Que deliciosas son ? Quién es el maestro ?', name: 'Gibi', npc: false },
+
+        { text: 'NO ERROR, JUGO DE LOS HABITANTES DE HARDINGREEN, JUGO RENOVABLE PARA EL MAESTRO.BIP BIP..ERROR...', name: 'Maquina', npc: true },
+
+        { text: 'QUEEE ? No puede ser cierto, somos seres pacíficos, no dañamos a nadie.Mis amigos y familia...debo advertirles.', name: 'Gibi', npc: false },
+
+        { text: 'MUY TARDE, YA ESTAS AQUI.ES EL TIEMPO INDICADO...BIP YA ES TIEMPO DE COSECHAR Y EXPRIMIR...BIP...ERROR..BIP...GHG34G', name: 'Maquina', npc: true },
+
+        { text: 'Cómo es posible ? Nadie sabe nada de esto.Quizás le pasó lo mismo a los antiguos pobladores.Es un ciclo repetido, parte del mismo mecanismo! No puede ser....NOOOO...', name: 'Gibi', npc: false },
+
+        { text: 'PREPARANDO SISTEMA DE RECOLECCION...', name: 'Maquina', npc: true },
+        { text: 'BIP...ERROR..BIP...BIP...', name: 'Maquina', npc: true },
+
+        {
+            name: 'Gibi',
+            text: 'Rapido debo decidir, o permito que el ciclo continue o apago la maquina.Qué podré hacer?',
+            options: [
+                'No hacer nada',
+                'Desenchufar la maquina.'
+            ]
+        },
+        {
+            name: 'Narrador',
+            text: 'Los habitantes de Hardingreen fueron licuados y transformados en el mejor jugo multifruta inteligente del mercado Funpoku, el ciclo se reinicia, vuelven a crecer los frutos con inteligencia adquirida para mejorar sus propiedades.',
+            npc: true,
+            big: true,
+        },
+        {
+            name: 'Narrador',
+            text: '',
+            action: 'end-game'
+        },
+        {
+            text: 'Pasaron los años y junto a los nuevos frutos consiguió abandonar la máquina y poblar una pequeña isla al norte de Madagascar, que rebautizó Nuevo Hardingreen.',
+            name: 'Narrador',
+            npc: true,
+            big: true,
+        },
+        {
+            text: 'Esta historia la contaron sus hijos y sus nietos para que las nuevas generaciones entiendan la importancia de saber los inicios de su legado y que mirar hacia un futuro mejor',
+            name: 'Narrador',
+            npc: true,
+            big: true,
+        },
+        {
+            name: 'Narrador',
+            text: '',
             action: 'end-game'
         },
     ]

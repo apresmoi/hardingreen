@@ -70,6 +70,7 @@ function App() {
         {loaded && stage === 'stage-1-intro' && <Dialog content={Dialogs.start} timeout={5} onDisappear={() => setStage('terrain1')} />}
         {loaded && stage === 'stage-2-intro' && <Dialog content="Que sotano tan extraño" timeout={2} onDisappear={() => setStage('terrain2')} />}
         {loaded && stage === 'stage-3-intro' && <Dialog content="Nooooo ! que es esto?" timeout={2} onDisappear={() => setStage('terrain3')} />}
+        {loaded && stage === 'stage-4-intro' && <Dialog content="Como puede existir todo esto aqui sin que nadie sepa?" timeout={2} onDisappear={() => setStage('terrain4')} />}
         {loaded && stage === 'end' && <Dialog content="Fin." />}
       </Events>
       {<Progress progress={progress} timeout={1} onDisappear={() => setLoaded(true)} />}

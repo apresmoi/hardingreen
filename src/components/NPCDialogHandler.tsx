@@ -6,8 +6,7 @@ import { getSound } from 'src/sounds';
 
 
 export function NPCDialogHandler() {
-    const [state, setState] = useState({ text: '', eval: null })
-    // const [evaluator, setResponseEvaluator] = useState<null | ((resp: string) => boolean)>(null)
+    const [state, setState] = useState({ text: '', eval: null, options: [], big: false })
     const [color, setColor] = useState('white')
     const { subscribeEvent } = useEvents()
 
@@ -40,17 +39,17 @@ export function NPCDialogHandler() {
     }, [state])
 
     useEffect(() => {
-        subscribeEvent('npc-dialog', ({ text, name, npc, color, timeout, onTimeout, evaluate }) => {
+        subscribeEvent('npc-dialog', ({ text, name, npc, color, timeout, onTimeout, evaluate, options, big }) => {
             if (text) {
-                setState({ text: `${name}: ${text}`, eval: evaluate })
+                setState({ text: `${name}: ${text}`, eval: evaluate, options: options ? options : [], big })
                 setColor(color)
             } else {
-                setState({ text: '', eval: null })
+                setState({ text: '', eval: null, options: [], big: false })
             }
 
             if (timeout) {
                 setTimeout(() => {
-                    setState({ text: '', eval: null })
+                    setState({ text: '', eval: null, options: [], big: false })
                     if (onTimeout) onTimeout()
                 }, timeout * 1000);
             }
@@ -64,5 +63,7 @@ export function NPCDialogHandler() {
         color={color}
         onSubmit={handleResponse}
         textInput={!!state.eval}
+        options={state.options}
+        big={state.big}
     />
 }

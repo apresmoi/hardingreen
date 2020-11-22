@@ -9,10 +9,12 @@ interface DialogProps {
     textInput?: boolean
     onSubmit?: (response: string) => void
     onDisappear?: () => void
+    options: string[]
+    big?: boolean
 }
 
 export function DialogNPC(props: DialogProps) {
-    const { onDisappear, timeout, noFade, onSubmit, textInput } = props
+    const { onDisappear, timeout, noFade, onSubmit, textInput, options, big } = props
 
     const [response, setResponse] = useState('')
     const [disappearing, set] = useState(false)
@@ -41,14 +43,24 @@ export function DialogNPC(props: DialogProps) {
         setResponse(e.currentTarget.value)
     }, [textInput])
 
-    return <div className={["dialog-npc", !disappearing ? "show" : ""].join(' ')}>
+
+    const handleSelectChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+        if (onSubmit) onSubmit(e.currentTarget.value)
+    }, [textInput, onSubmit])
+
+
+    return <div className={["dialog-npc", !disappearing ? "show" : "", big ? "big" : ""].join(' ')}>
         <div style={{ color: props.color }}>
             {props.content}
         </div>
-        {textInput && <input
+        {textInput && !options.length ? <input
             onKeyDown={handleKeyDown}
             onChange={handleChange}
-        />}
+        /> : null}
+        {options.length ? <select onChange={handleSelectChange} value="">
+            <option>Seleccione una opción</option>
+            {options.map(o => <option value={o}>{o}</option>)}
+        </select> : null}
         <div>
             Presione espacio para continuar.
         </div>

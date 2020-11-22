@@ -25,6 +25,7 @@ export function Player() {
     const [dialogOpen, setDialogOpen] = useState<boolean>(false)
     const [foundKey, setFoundKey] = useState<boolean>(false)
     const [sphinxTalking, setSphinxTalking] = useState<boolean>(false)
+    const [machineTalking, setMachineTalking] = useState<boolean>(false)
 
     const player = useMemo(() => {
         const body = Bodies.circle(0, -15, 6, { mass: 100, frictionAir: 0.2, friction: 0, restitution: 0, plugin: "player" })
@@ -53,6 +54,17 @@ export function Player() {
             setDialogOpen(true)
             raiseEvent('npc-dialog', Dialogs.sphinx[0])
             setDialogIndex(1)
+        })
+        subscribeEvent('machine-talk', () => {
+            setMachineTalking(true)
+            setDialogOpen(true)
+            raiseEvent('npc-dialog', Dialogs.machine[0])
+            setDialogIndex(1)
+        })
+        subscribeEvent('terrain-3-access', () => {
+            setSphinxTalking(false)
+            raiseEvent('npc-dialog', '')
+            setDialogIndex(0)
         })
     }, [player, subscribeEvent])
 
@@ -139,6 +151,40 @@ export function Player() {
                 setDialogIndex(dialogIndex + 1)
             }
         }
+        if (spaceDown && machineTalking) {
+            if (Dialogs.machine.length === dialogIndex) {
+                setDialogIndex(0)
+                setDialogOpen(false)
+                raiseEvent('start-engine')
+                raiseEvent('npc-dialog', '')
+                raiseEvent('end')
+            } else {
+                setDialogOpen(true)
+                const dialog = Dialogs.machine[dialogIndex]
+                const evaluate = (response: string) => {
+                    let reply: any = null
+                    if (dialog.options && response === dialog.options[1]) {
+                        setDialogIndex(dialogIndex + 4)
+                        reply = Dialogs.machine[dialogIndex + 3]
+                    } else {
+                        setDialogIndex(dialogIndex + 2)
+                        reply = Dialogs.machine[dialogIndex + 1]
+                    }
+                    raiseEvent('npc-dialog', {
+                        ...reply,
+                    })
+                }
+                raiseEvent('npc-dialog', {
+                    ...dialog,
+                    evaluate: dialog.options ? evaluate : null,
+                    options: dialog.options
+                })
+                if (dialog.action) {
+                    raiseEvent(dialog.action)
+                }
+                setDialogIndex(dialogIndex + 1)
+            }
+        }
         if (spaceDown && doorPosition(position)) {
             if (foundKey) {
                 const sound = getSound('Door')
@@ -189,7 +235,7 @@ export function Player() {
         else if (spaceDown && blueNPCPosition(position)) {
             raiseEvent('talk-blue')
         }
-    }, [spaceDown, position, foundKey, sphinxTalking])
+    }, [spaceDown, position, foundKey, sphinxTalking, machineTalking])
 
     useEffect(() => {
         if (arrowRight) setFacing(1)

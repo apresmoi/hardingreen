@@ -24,8 +24,17 @@
     margin: auto;
 }
 
+.dialog-npc.big {
+    height: 460px;
+    top: 100px;
+}
+
 .dialog-npc.show {
     opacity: 0.8;
+}
+
+.dialog-npc.big.show{
+    opacity: 1;
 }
 
 .dialog-npc div {

@@ -6,8 +6,10 @@ export type Stage =
     | 'terrain1'
     | 'stage-2-intro'
     | 'stage-3-intro'
+    | 'stage-4-intro'
     | 'terrain2'
     | 'terrain3'
+    | 'terrain4'
     | 'end'
 
 export const doorPosition = (() => {
