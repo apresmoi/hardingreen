@@ -8,7 +8,7 @@ import { Dialogs } from '../dialogs'
 
 import { PlayerTexture, PlayerDuckTexture } from "../textures";
 import { useEvents } from "./Events";
-import { doorPosition, yellowNPCPosition, orangeNPCPosition, blueNPCPosition } from "src/constants";
+import { doorPosition, yellowNPCPosition, orangeNPCPosition, blueNPCPosition, berriesPosition } from "src/constants";
 
 export function Player() {
     const [facing, setFacing] = useState(1)
@@ -20,6 +20,7 @@ export function Player() {
     const jumpCooldown = React.useRef<number>(0);
     const [dialogIndex, setDialogIndex] = useState<number>(0)
     const [dialogOpen, setDialogOpen] = useState<boolean>(false)
+    const [foundKey, setFoundKey] = useState<boolean>(false)
 
     const player = useMemo(() => {
         const body = Bodies.circle(0, -15, 6, { mass: 100, frictionAir: 0.2, friction: 0, restitution: 0, plugin: "player" })
@@ -40,6 +41,9 @@ export function Player() {
                 Body.setVelocity(player, { x: 0, y: 0 })
             }, 1000);
         })
+        subscribeEvent('found-key', () => {
+            setFoundKey(true)
+        })
     }, [player, subscribeEvent])
 
     useEffect(() => {
@@ -50,8 +54,25 @@ export function Player() {
     }, [arrowDown])
 
     useEffect(() => {
+        if (spaceDown && berriesPosition(position)) {
+            raiseEvent('berry-pickup')
+        }
         if (spaceDown && doorPosition(position)) {
-            raiseEvent('terrain1-door-open')
+            if (foundKey) {
+                raiseEvent('terrain1-door-open')
+            } else {
+                if (!dialogOpen) {
+                    raiseEvent('pause-engine')
+                    setDialogOpen(true)
+                    raiseEvent('npc-dialog', {
+                        name: 'Gubi', text: 'Parece que esta cerrado. Necesito una llave.', npc: true, color: 'white',
+                    })
+                } else {
+                    setDialogOpen(false)
+                    raiseEvent('start-engine')
+                    raiseEvent('npc-dialog', '')
+                }
+            }
         }
         else if (spaceDown && yellowNPCPosition(position)) {
             if (!dialogOpen) raiseEvent('pause-engine')
@@ -82,7 +103,7 @@ export function Player() {
         else if (spaceDown && blueNPCPosition(position)) {
             raiseEvent('talk-blue')
         }
-    }, [spaceDown, position])
+    }, [spaceDown, position, foundKey])
 
     useEffect(() => {
         if (arrowRight) setFacing(1)
@@ -108,6 +129,8 @@ export function Player() {
         if (group?.current?.position) {
             group.current.position.x = player.position.x
             group.current.position.z = player.position.y
+
+            // console.log(player.position)
         }
 
         if (arrowLeft || arrowRight || arrowUp || arrowDown) {

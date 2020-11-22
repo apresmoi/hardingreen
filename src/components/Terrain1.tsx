@@ -9,6 +9,7 @@ import { useEvents } from "./Events";
 import { DeathSensor } from "./Sensors/Death";
 import { NPC } from "./NPC";
 import { DialogNPC } from "src/layout/DialogNPC";
+import { Berries } from "./Berries";
 
 export function Terrain1() {
     const { world } = usePhysics()
@@ -82,7 +83,6 @@ export function Terrain1() {
         }
     }, [terrain, world])
 
-
     return (
         <>
             <group
@@ -98,6 +98,7 @@ export function Terrain1() {
             <NPC idColor="orange" position={{ x: -40, y: 1, z: -12 }} texture={Player3Texture} />
             <DeathSensor position={{ x: 2260 / 12, y: -50 }} size={{ width: 100, height: 50 }} />
             <DeathSensor position={{ x: -2260 / 12 - 50, y: -70 }} size={{ width: 100, height: 50 }} />
+            <Berries />
         </>
     );
 }

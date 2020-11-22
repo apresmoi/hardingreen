@@ -39,3 +39,11 @@ export const blueNPCPosition = (() => {
         return v.x > min.x && v.x < max.x && v.y > min.y && v.y < max.y
     }
 })()
+
+export const berriesPosition = (() => {
+    const min = { x: 32, y: -15 }
+    const max = { x: 56, y: -10 }
+    return (v: { x: number, y: number }) => {
+        return v.x > min.x && v.x < max.x && v.y > min.y && v.y < max.y
+    }
+})()

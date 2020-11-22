@@ -52,4 +52,8 @@ export const Terrain2Texture = new TextureLoader(manager).load("map_sub.png");
 export const ObjectTrapTexture = new TextureLoader(manager).load("pincho.png");
 export const ObjectBlockTexture = new TextureLoader(manager).load("bloque.png");
 
+export const ObjectBerryTexture = new TextureLoader(manager).load("berry.png");
+export const ObjectKeyTexture = new TextureLoader(manager).load("key.png");
+
+
 export const Roboto = new FontLoader(manager).parse(JSONfont)

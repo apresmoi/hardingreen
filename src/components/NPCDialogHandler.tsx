@@ -9,13 +9,20 @@ export function NPCDialogHandler() {
     const [color, setColor] = useState('white')
     const { subscribeEvent } = useEvents()
     useEffect(() => {
-        subscribeEvent('npc-dialog', ({ text, name, npc, color }) => {
+        subscribeEvent('npc-dialog', ({ text, name, npc, color, timeout, onTimeout }) => {
             // console.log(args)
             if (text) {
                 setText(`${name}: ${text}`)
                 setColor(color)
             } else {
                 setText('')
+            }
+
+            if (timeout) {
+                setTimeout(() => {
+                    setText('')
+                    if(onTimeout) onTimeout()
+                }, timeout * 1000);
             }
         })
     }, [])
