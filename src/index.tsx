@@ -4,6 +4,9 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
+//@ts-ignore
+window.decomp = require('poly-decomp');
+
 ReactDOM.render(
   <React.StrictMode>
     <App />

@@ -1,0 +1,29 @@
+.meter {
+    height: 30px;
+    top: 50%;
+    position: absolute;
+    width: 800px;
+    background: #555;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    box-shadow: inset 0 -1px 1px rgba(255, 255, 255, 0.3);
+    transition: all 0.25s ease-in-out;
+    opacity: 0;
+}
+
+.meter.show {
+    opacity: 1;
+}
+
+.meter>span {
+    display: block;
+    height: 100%;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    background-color: white;
+    position: relative;
+    overflow: hidden;
+}
